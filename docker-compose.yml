@@ -1,0 +1,28 @@
+version: '3'
+services:
+  api:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./api
+    environment:
+      - TRUST_URL=http://localhost:3000
+      - NODE_ENV=development
+      - MONGO_URI=mongodb://mongo:27017/auth
+      - PORT=4000
+    ports:
+      - 4000:4000
+    depends_on:
+      - mongo
+    command: npm start
+  mongo:
+    image: mongo
+    ports:
+      - '27018:27017'
+  client:
+    depends_on:
+      - api
+    build:
+      dockerfile: ./Dockerfile
+      context: ./client
+    ports:
+      - 3000:80
